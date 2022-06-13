@@ -1,13 +1,13 @@
 import React from 'react';
 import * as uuid from 'uuid';
 import PouchDB from "pouchdb";
-import { DatabaseEnums } from 'database.enums';
+import DatabaseEnums from './database.enums';
 
 function useDatabaseMetadata() {
 
     const metadataDatabaseInstance = new PouchDB(DatabaseEnums.MetadataDBName);
-    const [databaseInstance, setDatabaseInstance] = React.useState<any>(null);
-    const [metadataInfo, setMetadataInfo] = React.useState<null | any>(null);
+    const [databaseInstance, setDatabaseInstance] = React.useState();
+    const [metadataInfo, setMetadataInfo] = React.useState();
     
     React.useEffect(() => {
         fetchMetadata();

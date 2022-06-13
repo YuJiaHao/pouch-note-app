@@ -1,9 +1,31 @@
 import React,{useState} from 'react'
 import { Container,Form } from 'react-bootstrap'
+import DatabaseEnums from '../utils/database.enums';
+import useDatabaseMetadata from '../utils/useDatabaseMetadata'
+import PouchDB from "pouchdb";
 
-const Create = ({setNotes}) => {
+const Create = () => {
+    const [databaseInstance, metadataInfo] = useDatabaseMetadata();
+    const metadataDatabaseInstance = new PouchDB(DatabaseEnums.MetadataDBName);
 
     const [form ,setForm] = useState({title:'',text:''}) ;
+    const [eventCount, setEventCount] = React.useState(0);
+
+    React.useEffect(() => {
+        if(metadataInfo)
+        setEventCount(metadataInfo.eventCount);
+      });
+
+
+    const storeEventCount = (num) => {
+        setEventCount(num);
+        metadataDatabaseInstance.put({
+          _id: DatabaseEnums.MetadataDBLookupRow,
+          _rev: metadataInfo._rev,
+          eventCount: num,
+          nodeId: metadataInfo.nodeId
+        })
+      }
 
     function handleChanged(event) {
         const {value, name} = event.target;
@@ -11,7 +33,19 @@ const Create = ({setNotes}) => {
     }
 
     function AddNote() {
-        setNotes(note => [...note, form]);
+        if (!form.text||!form.title) {
+            return alert("Nothing to add...");
+        }
+        const newCount = eventCount + 1;
+        const document = {
+            _id: `${metadataInfo.nodeId}_${newCount}`,
+            title: form.title,
+            text: form.text,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        }
+        databaseInstance.put(document);
+        storeEventCount(newCount);
         setForm({title:'',text:''});   
     }
 
