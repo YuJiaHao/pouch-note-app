@@ -1,11 +1,17 @@
 import React from 'react'
-import { Container } from 'react-bootstrap'
+import { Container ,Card} from 'react-bootstrap'
 
-const Notes = () => {
+const Notes = ({notes}) => {
   return (
-    <Container>
-        <h1 className='mt-5'>Notes</h1>
-        <p>This is practice note-app</p>
+    <Container className='mt-3'>
+        {notes.map( (note) => (
+            <Card style={{ width: '18rem' }}>
+            <Card.Body>
+              <Card.Title>{note.title}</Card.Title>
+              <Card.Text>{note.text}</Card.Text>
+            </Card.Body>
+          </Card>
+        ))}
     </Container>
   )
 }

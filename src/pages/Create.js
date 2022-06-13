@@ -1,13 +1,18 @@
 import React,{useState} from 'react'
 import { Container,Form } from 'react-bootstrap'
 
-const Create = () => {
+const Create = ({setNotes}) => {
 
     const [form ,setForm] = useState({title:'',text:''}) ;
 
     function handleChanged(event) {
         const {value, name} = event.target;
         setForm({...form, [name]:value});
+    }
+
+    function AddNote() {
+        setNotes(note => [...note, form]);
+        setForm({title:'',text:''});   
     }
 
     return (
@@ -22,8 +27,8 @@ const Create = () => {
                     <Form.Label>Text</Form.Label>
                     <Form.Control onChange={handleChanged} value = {form.text} name='text' type="text" placeholder="Enter text" />
                 </Form.Group>
-                
             </Form>
+            <button className='btn btn-dark' onClick={AddNote} >Add</button>
         </Container>
 
     )
